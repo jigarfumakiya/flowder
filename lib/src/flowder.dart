@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flowder/src/_notification.dart';
 import 'package:flowder/src/core/downloader_core.dart';
 import 'package:flowder/src/utils/constants.dart';
 import 'package:flowder/src/utils/downloader_utils.dart';
@@ -25,6 +26,11 @@ class Flowder {
   static Future<DownloaderCore> download(
       String url, DownloaderUtils options) async {
     try {
+      if (options.showNotification) {
+        /// if notificationShow is true then we need to setup the notification.
+        await DownloadNotification(options.notificationUtils)
+            .initializationNotification();
+      }
       // ignore: cancel_subscriptions
       final subscription = await initDownload(url, options);
       return DownloaderCore(subscription, options, url);

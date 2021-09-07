@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:dio/dio.dart' hide ProgressCallback;
 import 'package:flowder/src/flowder.dart';
 import 'package:flowder/src/progress/interfaces/progress_interface.dart';
+import 'package:flowder/src/utils/notification_utils.dart';
 
 /// Required for the initialization of [Flowder]
 class DownloaderUtils {
-  /// Notification Progress Channel Inteface
+  /// Notification Progress Channel Interface
   /// Please use [ProgressImplementation] when called
   final ProgressInterface progress;
 
@@ -28,6 +29,15 @@ class DownloaderUtils {
   /// ```
   final ProgressCallback progressCallback;
 
+  /// Setup the notification
+  /// should show notification while downloading
+  /// default value set to true
+  final bool showNotification;
+
+  ///Notification utils
+
+  final NotificationUtils notificationUtils;
+
   DownloaderUtils({
     required this.progress,
     this.client,
@@ -35,5 +45,7 @@ class DownloaderUtils {
     this.deleteOnCancel = false,
     required this.onDone,
     required this.progressCallback,
+    this.showNotification = true,
+    required this.notificationUtils,
   });
 }

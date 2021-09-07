@@ -1,9 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'dart:async';
-
 import 'package:flowder/flowder.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() {
@@ -32,7 +31,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _setPath() async {
-    path = (await getExternalStorageDirectory())!.path;
+    path = (await getApplicationDocumentsDirectory()).path;
   }
 
   @override
@@ -42,42 +41,49 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('TERI TERI'),
-            Text('Audio'),
-            ElevatedButton(
-              onPressed: () async {
-                options = DownloaderUtils(
-                  progressCallback: (current, total) {
-                    final progress = (current / total) * 100;
-                    print('Downloading: $progress');
-                  },
-                  file: File('$path/200MB.zip'),
-                  progress: ProgressImplementation(),
-                  onDone: () => print('COMPLETE'),
-                  deleteOnCancel: true,
-                );
-                core = await Flowder.download(
-                    'http://ipv4.download.thinkbroadband.com/200MB.zip',
-                    options);
-              },
-              child: Text('DOWNLOAD'),
-            ),
-            ElevatedButton(
-              onPressed: () async => core.resume(),
-              child: Text('RESUME'),
-            ),
-            ElevatedButton(
-              onPressed: () async => core.cancel(),
-              child: Text('CANCEL'),
-            ),
-            ElevatedButton(
-              onPressed: () async => core.pause(),
-              child: Text('PAUSE'),
-            ),
-          ],
+        body: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('TERI TERI'),
+              Text('Audio'),
+              ElevatedButton(
+                onPressed: () async {
+                  options = DownloaderUtils(
+                      progressCallback: (current, total) {
+                        final progress = (current / total) * 100;
+                        print('Downloading: $progress');
+                      },
+                      file: File('$path/200MB.zip'),
+                      progress: ProgressImplementation(),
+                      onDone: () => print('COMPLETE'),
+                      deleteOnCancel: true,
+                      showNotification: true,
+                      notificationUtils: NotificationUtils(
+                          androidNotificationIcon: 'ic_launcher',
+                          title: 'File Downloading',
+                          body: 'Downloading...'));
+                  core = await Flowder.download(
+                      'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                      options);
+                },
+                child: Text('DOWNLOAD'),
+              ),
+              ElevatedButton(
+                onPressed: () async => core.resume(),
+                child: Text('RESUME'),
+              ),
+              ElevatedButton(
+                onPressed: () async => core.cancel(),
+                child: Text('CANCEL'),
+              ),
+              ElevatedButton(
+                onPressed: () async => core.pause(),
+                child: Text('PAUSE'),
+              ),
+            ],
+          ),
         ),
       ),
     );
